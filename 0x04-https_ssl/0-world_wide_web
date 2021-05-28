@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
-# Digs domain and option subdomain
-domain=$1
-if ["$#" -eq 2 ]; then
-subdomain=$2
-else
-subdomain=("www" "lb-01" "web-01" "web-02")
-fi
+#Configure domain zone
+# shellcheck disable=SC2086
 
-for sub in "${subdomain[@]}";
-do
-echo -n "The subdomain $sub"
-dig "$sub.$domain" | grep -A1 'Answer SECTION:' | tail -n -1 | awk '{print " is a " $4 " record and points to " $5}'
-done
+sub_info () {
+    
+    if [ "$#" -eq 2 ]; then
+        dig $2.$1 | grep -A1 'ANSWER SECTION:' | tr '\n' ' ' | awk '{split($0,a," "); split(a[4],b,"."); printf "The subdomain %s is a %s record and points to %s\n",b[1], a[7], a[8]}'
+    elif [ "$#" -eq 1 ]; then
+        dig www.$1 | grep -A1 'ANSWER SECTION:' | tr '\n' ' ' | awk '{split($0,a," "); printf "The subdomain www is a %s record and points to %s\n", a[7], a[8]}'
+        dig lb-01.$1 | grep -A1 'ANSWER SECTION:' | tr '\n' ' ' | awk '{split($0,a," "); printf "The subdomain lb-01 is a %s record and points to %s\n", a[7], a[8]}'
+        dig web-01.$1 | grep -A1 'ANSWER SECTION:' | tr '\n' ' ' | awk '{split($0,a," "); printf "The subdomain web-01 is a %s record and points to %s\n", a[7], a[8]}'
+        dig web-02.$1 | grep -A1 'ANSWER SECTION:' | tr '\n' ' ' | awk '{split($0,a," "); printf "The subdomain web-02 is a %s record and points to %s\n", a[7], a[8]}'
+    fi
+
+}
+
+sub_info $1 $2
