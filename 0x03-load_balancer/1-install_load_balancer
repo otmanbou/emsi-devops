@@ -11,6 +11,6 @@ echo "frontend load-banlancer
     default_backend web-backend" >> /etc/haproxy/haproxy.cfg
 echo "backend web-backend
     balance roundrobin
-    server 3123-web-01 34.73.217.214:80 check
-    server 3123-web-02 35.196.33.40:80 check" >> /etc/haproxy/haproxy.cfg
+    server 3133-web-01 34.73.217.214:80 check
+    server 3133-web-02 35.196.33.40:80 check" >> /etc/haproxy/haproxy.cfg
 sudo service haproxy restart
